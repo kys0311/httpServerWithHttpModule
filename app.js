@@ -55,7 +55,7 @@ const httpRequestListener = function(request, response) {
                 response.writeHead(200, {'Content-Type' : 'application/json'});
                 response.end(JSON.stringify({"message" : "userCreated"}));
             });
-        } else if(url === '/list') {
+        } else if(url === '/post') {
             let body = "";
             
             request.on("data", (data) => {
@@ -74,6 +74,28 @@ const httpRequestListener = function(request, response) {
                 response.writeHead(200, {'Content-Type' : 'application/json'});
                 response.end(JSON.stringify({"message" : "postCreated"}));
             })
+        }
+    }
+
+    if (method === "GET") {
+        if(url === '/list') {
+            const data = [];
+            for(let i=0; i<posts.length; i++) {
+                for(let j=0; j<users.length; j++) {
+                    if(users[j].id === posts[i].userId) {
+                        let userPost = {
+                            "userID"         : users[j].id,
+                            "userName"       : users[j].name,
+                            "postingId"      : posts[i].id,
+                            "postingTitle"   : posts[j].title,
+                            "postingContent" : posts[j].content,
+                        }
+                        data.push(userPost);
+                    }
+                }
+            }
+            response.writeHead(200, {'Content-Type' : 'application/json'});
+            response.end(JSON.stringify({"data" : data}));
         }
     }
 }
